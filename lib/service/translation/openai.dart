@@ -82,7 +82,7 @@ class OpenAITranslationService extends AbstractTranslationService
 
     final prompt = '''
 Translate the following text from $sourceLanguage to these languages: ${targets.join(', ')}.
-Return only the translations, in the same order as the languages listed, one per line.
+Return only the translations, in the same order as the languages listed, separated by '\n******\n'.
 Do not include the language names, colons, or any extra text—just the translations.
 Text: $source
 ''';
@@ -142,13 +142,14 @@ Text: $source
 
     final prompt = '''
 Translate the following texts from $sourceLanguage to $target.
-Return only the translations, in the same order as the texts listed, one per line.
+Each string to be translated is separated by '\n******\n'.
+Return only the translations, in the same order as the texts listed, with every returned translation separated by '\n******\n'.
 Do not include the original texts, language names, colons, or any extra text—just the translations.
 Texts:
-${sources.join('\n')}
+${sources.join('\n******\n')}
 ''';
 
-    final apiResult = await _queryCompletions(prompt, 2000);
+    final apiResult = await _queryCompletions(prompt, 10000);
 
     if (!apiResult.succeeded) {
       logger.warning('Translation failed');
@@ -176,7 +177,7 @@ ${sources.join('\n')}
 
   static List<String> _splitResponseIntoLines(String text) => text
       .trim()
-      .split('\n')
+      .split('******')
       .map((e) => e.trim())
       .where((e) => e.isNotEmpty)
       .toList();
