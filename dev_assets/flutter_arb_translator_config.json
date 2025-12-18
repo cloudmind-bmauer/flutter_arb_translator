@@ -26,7 +26,7 @@
   },
   "OpenAI": {
     "Url": "https://api.openai.com",
-    "ApiKey": "<required>",
-    "Model": "<optional>"
+    "ApiKey": "<openai api key>",
+    "Model": "gpt-4.1"
   }
 }
