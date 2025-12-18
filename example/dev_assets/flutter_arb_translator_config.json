@@ -25,7 +25,7 @@
   },
   "OpenAI": {
     "Url": "https://api.openai.com",
-    "ApiKey": "",
+    "ApiKey": "<openai api key>",
     "Model": ""
   }
 }
