@@ -109,7 +109,11 @@ class ARBParser {
     }
 
     for (final annotation in annotations.entries) {
-      final exist = items[annotation.key]!;
+      final exist = items[annotation.key];
+
+      if (exist == null) {
+        throw Exception("An annotation exists where there is no key: ${annotation.key}");
+      }
 
       final arbAnnotation = ARBItemAnnotation.fromJson(annotation.value);
 
