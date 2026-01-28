@@ -17,13 +17,13 @@ import 'package:flutter_arb_translator/utils/extensions.dart';
 
 const logLevel = LogLevel.production;
 
-Future<int> main(List<String> arguments) async {
+void main(List<String> arguments) async {
   final argsParser = _initArgsParser();
   final args = argsParser.parse(arguments);
 
   if (args[_ArgsNames.help] == true) {
     print(argsParser.usage);
-    return 1;
+    throw Exception('');
   }
 
   final dir = args[_ArgsNames.dir] as String;
@@ -58,26 +58,26 @@ Future<int> main(List<String> arguments) async {
   if (requiredArgsErrors.isNotEmpty) {
     stdout.writeln('\x1B[33m${requiredArgsErrors.join('\n')}\x1B[0m');
     stdout.writeln(argsParser.usage);
-    return 1;
+    throw Exception('');
   }
 
   final absDir = path.absolute(dir);
   if (!Directory(absDir).existsSync()) {
     stdout.writeln('\x1B[33mDirectory $absDir does not exist.\x1B[0m');
-    return 1;
+    throw Exception('');
   }
 
   final sourceArbPath = path.join(absDir, '${prefix}_$from.arb');
   if (!File(sourceArbPath).existsSync()) {
     stdout.writeln('\x1B[33mFile $sourceArbPath does not exist.\x1B[0m');
-    return 1;
+    throw Exception('');
   }
 
   if (!TranslationServiceFactory.checkConfigurationFileExists()) {
     final configFilePath = TranslationServiceFactory.getConfigurationFilePath();
     stdout.writeln(
         '\x1B[33mConfiguration file $configFilePath does not exist.\x1B[0m');
-    return 1;
+    throw Exception('');
   }
 
   final arbParser = ARBParser(
@@ -90,7 +90,7 @@ Future<int> main(List<String> arguments) async {
   } on Exception catch (ex) {
     Logger(logLevel).error('Failed to read arb file', ex);
     stdout.writeln('\x1B[33mFailed to read ARB file $sourceArbPath\x1B[0m');
-    return 1;
+    throw Exception('');
   }
 
   TranslationServiceType serviceType;
@@ -129,7 +129,7 @@ Future<int> main(List<String> arguments) async {
     final configFilePath = TranslationServiceFactory.getConfigurationFilePath();
     stdout.writeln('\x1B[33mFailed to initialize $serviceName service. Please '
         'fix $configFilePath file\x1B[0m');
-    return 1;
+    throw Exception('');
   }
 
   final existFiles = to
@@ -188,7 +188,7 @@ Future<int> main(List<String> arguments) async {
 
   if (shouldCancel) {
     stdout.writeln('Translation applying canceled');
-    return 1;
+    throw Exception('');
   }
 
   final results = applier.getResults();
@@ -202,7 +202,6 @@ Future<int> main(List<String> arguments) async {
 
     writer.writeToFile(path.join(absDir, '${prefix}_$lang.arb'));
   }
-  return 0;
 }
 
 args.ArgParser _initArgsParser() {
