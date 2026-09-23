@@ -11,6 +11,7 @@ import 'deepl.dart';
 import 'amazon_translate.dart';
 import 'libretranslate.dart';
 import 'openai.dart';
+import 'anthropic.dart';
 
 import '../log/logger.dart';
 
@@ -24,6 +25,7 @@ enum TranslationServiceType {
   amazonTranslate,
   libreTranslate,
   openai,
+  anthropic,
 }
 
 /// Creates and configures specific translation API services
@@ -63,6 +65,8 @@ class TranslationServiceFactory {
           return _createLibreTranslateTranslator(configuration);
         case TranslationServiceType.openai:
           return _createOpenAITranslator(configuration);
+        case TranslationServiceType.anthropic:
+          return _createAnthropicTranslator(configuration);
       }
     } on Exception catch (error) {
       logger.error('Failed to initialize translator service', error);
@@ -280,6 +284,34 @@ class TranslationServiceFactory {
     }
 
     return OpenAITranslationService(
+      baseUrl: url,
+      apiKey: apiKey,
+      model: model,
+      logger: logger,
+    );
+  }
+
+  AnthropicTranslationService _createAnthropicTranslator(
+    Map<String, dynamic> configuration,
+  ) {
+    final serviceKey = 'Anthropic';
+    final apiKeyKey = 'ApiKey';
+    final urlKey = 'Url';
+    final modelKey = 'Model';
+
+    final apiKey = configuration.lookupNested('$serviceKey:$apiKeyKey');
+    final url = configuration.lookupNested('$serviceKey:$urlKey');
+    final model = configuration.lookupNested('$serviceKey:$modelKey');
+
+    if (apiKey == null) {
+      throw Exception('$serviceKey$apiKeyKey is not defined');
+    }
+
+    if (url == null) {
+      throw Exception('$serviceKey:$urlKey is not defined');
+    }
+
+    return AnthropicTranslationService(
       baseUrl: url,
       apiKey: apiKey,
       model: model,

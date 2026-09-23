@@ -28,5 +28,10 @@
     "Url": "https://api.openai.com",
     "ApiKey": "<openai api key>",
     "Model": "gpt-4.1"
+  },
+  "Anthropic": {
+    "Url": "https://api.anthropic.com",
+    "ApiKey": "<anthropic api key>",
+    "Model": "claude-sonnet-5"
   }
 }

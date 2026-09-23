@@ -44,7 +44,7 @@ void main(List<String> arguments) async {
 
   if (serviceName == null) {
     requiredArgsErrors.add('Please specify [service] option [azure, '
-        'yandex, google, deepl, amazon, libtrans, openai]');
+        'yandex, google, deepl, amazon, libtrans, openai, anthropic]');
   }
 
   if (from == null) {
@@ -115,6 +115,9 @@ void main(List<String> arguments) async {
       break;
     case 'openai':
       serviceType = TranslationServiceType.openai;
+      break;
+    case 'anthropic':
+      serviceType = TranslationServiceType.anthropic;
       break;
     default:
       throw Exception('Unsupported service type: $serviceName');
@@ -224,6 +227,7 @@ args.ArgParser _initArgsParser() {
       'amazon',
       'libtrans',
       'openai',
+      'anthropic',
     ],
   );
 
